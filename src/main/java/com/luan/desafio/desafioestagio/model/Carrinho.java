@@ -12,6 +12,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "carrinhos")
+@NoArgsConstructor
 public class Carrinho {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +42,7 @@ public class Carrinho {
     )
     private Set<Produto> itensCarrinho = new HashSet<Produto>();
 
-    public void setCliente(Cliente cliente) {
+    public Carrinho(Cliente cliente) {
         this.cliente = cliente;
     }
 
