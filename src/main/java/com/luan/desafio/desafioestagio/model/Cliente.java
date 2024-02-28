@@ -22,7 +22,4 @@ public class Cliente {
     private String cpf;
     @NotBlank
     private String email;
-    @OneToOne
-    @JoinColumn(name = "carrinho_id")
-    private Carrinho carrinho;
 }

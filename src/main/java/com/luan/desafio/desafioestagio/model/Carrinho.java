@@ -8,13 +8,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -25,16 +28,23 @@ public class Carrinho {
     private Long id;
     private BigDecimal total = BigDecimal.ZERO;
     private Integer quantidadeItens = 0;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "item_carrinho",
             joinColumns = @JoinColumn(name = "cliente_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private final Map<Produto, Integer> produtos = new HashMap<Produto, Integer>();
+    private Set<Produto> itensCarrinho = new HashSet<Produto>();
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
     public void adicionarProduto(Produto produto) {
-        produtos.put(produto, 1);
+        itensCarrinho.add(produto);
         total = total.add(produto.getPreco());
         quantidadeItens++;
     }
