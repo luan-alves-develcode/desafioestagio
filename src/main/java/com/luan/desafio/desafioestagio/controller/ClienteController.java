@@ -18,6 +18,7 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<String> cadastrar(@RequestBody CadastrarClienteDto dto) {
+        System.out.println(dto.toString());
         try {
             Cliente cliente = clienteService.salvar(dto);
             return ResponseEntity.ok().build();
