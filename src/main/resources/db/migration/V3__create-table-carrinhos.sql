@@ -1,8 +1,8 @@
 CREATE TABLE carrinhos (
   id BIGINT AUTO_INCREMENT NOT NULL,
-   total DECIMAL NULL,
-   quantidade_itens INT NULL,
-   cliente_id BIGINT NULL,
+   total DECIMAL NOT NULL,
+   quantidade_itens INT NOT NULL,
+   cliente_id BIGINT NOT NULL,
    CONSTRAINT pk_carrinhos PRIMARY KEY (id)
 );
 
