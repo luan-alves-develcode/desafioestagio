@@ -1,0 +1,7 @@
+CREATE TABLE clientes (
+  id BIGINT AUTO_INCREMENT NOT NULL,
+   nome VARCHAR(255) NOT NULL,
+   cpf VARCHAR(11) NOT NULL,
+   email VARCHAR(255) NOT NULL,
+   CONSTRAINT pk_clientes PRIMARY KEY (id)
+);
