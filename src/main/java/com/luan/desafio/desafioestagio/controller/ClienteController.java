@@ -3,6 +3,7 @@ package com.luan.desafio.desafioestagio.controller;
 import com.luan.desafio.desafioestagio.dto.CadastrarClienteDto;
 import com.luan.desafio.desafioestagio.model.Cliente;
 import com.luan.desafio.desafioestagio.service.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class ClienteController {
     ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<String> cadastrar(@RequestBody CadastrarClienteDto dto) {
+    public ResponseEntity<String> cadastrar(@RequestBody @Valid CadastrarClienteDto dto) {
         System.out.println(dto.toString());
         try {
             Cliente cliente = clienteService.salvar(dto);
