@@ -14,4 +14,7 @@ public class ClienteService {
         Cliente cliente = new Cliente(dto);
         return clienteRepository.save(cliente);
     }
+    public Cliente findById(Long id) {
+        return clienteRepository.getReferenceById(id);
+    }
 }
