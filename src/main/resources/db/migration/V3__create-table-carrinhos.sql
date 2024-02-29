@@ -1,6 +1,6 @@
 CREATE TABLE carrinhos (
   id BIGINT AUTO_INCREMENT NOT NULL,
-   total DECIMAL NOT NULL,
+   total DECIMAL(10,2) NOT NULL,
    quantidade_itens INT NOT NULL,
    cliente_id BIGINT NOT NULL,
    CONSTRAINT pk_carrinhos PRIMARY KEY (id)

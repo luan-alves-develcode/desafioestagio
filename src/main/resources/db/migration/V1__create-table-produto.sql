@@ -2,7 +2,7 @@ CREATE TABLE produtos (
   id BIGINT AUTO_INCREMENT NOT NULL,
    nome VARCHAR(150) NULL,
    descricao TEXT(1000) NOT NULL,
-   preco DECIMAL NOT NULL,
+   preco DECIMAL(10,2) NOT NULL,
    estoque INT NOT NULL,
    CONSTRAINT pk_produto PRIMARY KEY (id)
 );
