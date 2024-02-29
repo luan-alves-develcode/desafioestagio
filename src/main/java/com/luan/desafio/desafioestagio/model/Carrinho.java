@@ -40,7 +40,7 @@ public class Carrinho {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
     @OneToMany(mappedBy = "carrinho", fetch = FetchType.LAZY)
-    private List<ItemCarrinho> itensCarrinho = new LinkedList<ItemCarrinho>();
+    private Set<ItemCarrinho> itensCarrinho = new HashSet<>();
 
     public Carrinho(Cliente cliente) {
         this.cliente = cliente;

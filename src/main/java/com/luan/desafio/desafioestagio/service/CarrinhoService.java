@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CarrinhoService {
@@ -62,5 +63,15 @@ public class CarrinhoService {
 
     private BigDecimal calcularTotal(BigDecimal total,BigDecimal precoProduto, Integer quantidade) {
         return total.add(precoProduto.multiply(BigDecimal.valueOf(quantidade)));
+    }
+
+    private boolean verificaSeProdutoExisteNoCarrinho(Carrinho carrinho, Long produtoId) {
+        Set<ItemCarrinho> itensCarrinho = carrinho.getItensCarrinho();
+        for (ItemCarrinho item: itensCarrinho) {
+          if (item.getProduto().getId().equals(produtoId)) {
+            return true;
+          }
+        }
+        return false;
     }
 }
