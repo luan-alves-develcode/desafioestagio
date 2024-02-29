@@ -19,6 +19,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,16 +37,21 @@ public class Carrinho {
     @OneToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-    @OneToMany(mappedBy = "carrinho")
-    private Set<ItemCarrinho> itensCarrinho = new HashSet<ItemCarrinho>();
+    @OneToMany(mappedBy = "carrinho", fetch = FetchType.LAZY)
+    private List<ItemCarrinho> itensCarrinho = new LinkedList<ItemCarrinho>();
 
     public Carrinho(Cliente cliente) {
         this.cliente = cliente;
     }
 
-    public void adicionarProduto(Produto produto) {
-        itensCarrinho.add(produto);
-        total = total.add(produto.getPreco());
-        quantidadeItens++;
+    @Override
+    public String toString() {
+        return "Carrinho{" +
+                "id=" + id +
+                ", total=" + total +
+                ", quantidadeItens=" + quantidadeItens +
+                ", cliente=" + cliente +
+                ", itensCarrinho=" + itensCarrinho +
+                '}';
     }
 }
