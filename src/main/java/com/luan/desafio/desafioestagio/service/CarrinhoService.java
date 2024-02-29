@@ -1,7 +1,10 @@
 package com.luan.desafio.desafioestagio.service;
 
+import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
 import com.luan.desafio.desafioestagio.model.Carrinho;
 import com.luan.desafio.desafioestagio.model.Cliente;
+import com.luan.desafio.desafioestagio.model.ItemCarrinho;
+import com.luan.desafio.desafioestagio.model.Produto;
 import com.luan.desafio.desafioestagio.repository.CarrinhoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,14 +12,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class CarrinhoService {
     @Autowired
-    CarrinhoRepository carrinhoRepository;
+    private CarrinhoRepository carrinhoRepository;
 
     @Autowired
-    ClienteService clienteService;
+    private ClienteService clienteService;
+
+    @Autowired
+    private ProdutoService produtoService;
+
+    @Autowired
+    private ItemCarrinhoService itemCarrinhoService;
 
     public void criar(Long clienteId) {
         Cliente cliente = clienteService.findById(clienteId);
         Carrinho carrinho = new Carrinho(cliente);
         carrinhoRepository.save(carrinho);
+    }
+
+    public void adicionarItemAoCarrinho(ItemParaoCarrinhoDto itemParaCarrinhoDto, Long clienteId) {
+        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Produto produto = produtoService.findProdutoById(itemParaCarrinhoDto.getProdutoId());
+        ItemCarrinho item = new ItemCarrinho(produto, carrinho, itemParaCarrinhoDto.getQuantidade());
+
+        carrinho.getItensCarrinho().add(item);
+        itemCarrinhoService.salvar(item);
     }
 }
