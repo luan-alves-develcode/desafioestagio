@@ -1,5 +1,6 @@
 package com.luan.desafio.desafioestagio.service;
 
+import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
 import com.luan.desafio.desafioestagio.model.Carrinho;
 import com.luan.desafio.desafioestagio.model.Cliente;
@@ -8,6 +9,8 @@ import com.luan.desafio.desafioestagio.model.Produto;
 import com.luan.desafio.desafioestagio.repository.CarrinhoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CarrinhoService {
@@ -36,5 +39,12 @@ public class CarrinhoService {
 
         carrinho.getItensCarrinho().add(item);
         itemCarrinhoService.salvar(item);
+    }
+
+    public CarrinhoDto verCarrinho(Long clienteId) {
+        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        List<ItemCarrinho> itensCarrinho = itemCarrinhoService.encontrarItensCarrinhoPorCarrinhoId(carrinho.getId());
+        System.out.println(itensCarrinho);
+        return new CarrinhoDto(carrinho, itensCarrinho);
     }
 }
