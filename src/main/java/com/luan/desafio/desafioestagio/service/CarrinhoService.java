@@ -56,6 +56,8 @@ public class CarrinhoService {
     public void apagar(Long clienteId) {
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
         itemCarrinhoService.limparCarrinho(carrinho.getId());
+        carrinho.setQuantidadeItens(0);
+        carrinho.setTotal(BigDecimal.ZERO);
     }
 
     private BigDecimal calcularTotal(BigDecimal total,BigDecimal precoProduto, Integer quantidade) {
