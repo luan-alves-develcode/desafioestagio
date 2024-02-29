@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -34,13 +35,8 @@ public class Carrinho {
     @OneToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "item_carrinho",
-            joinColumns = @JoinColumn(name = "cliente_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<Produto> itensCarrinho = new HashSet<Produto>();
+    @OneToMany(mappedBy = "carrinho")
+    private Set<ItemCarrinho> itensCarrinho = new HashSet<ItemCarrinho>();
 
     public Carrinho(Cliente cliente) {
         this.cliente = cliente;

@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,8 +33,8 @@ public class Produto {
     private BigDecimal preco;
     @NotNull
     private Integer estoque = 0;
-    @ManyToMany(mappedBy = "itensCarrinho")
-    private Set<Carrinho> carrinhos;
+    @OneToMany(mappedBy = "produto")
+    private Set<ItemCarrinho> carrinhos;
     public Produto(String nome, String descricao, BigDecimal preco, Integer estoque) {
         this.nome = nome;
         this.descricao = descricao;
