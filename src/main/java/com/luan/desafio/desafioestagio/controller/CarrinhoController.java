@@ -6,6 +6,7 @@ import com.luan.desafio.desafioestagio.service.CarrinhoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +46,15 @@ public class CarrinhoController {
     @GetMapping("/{clienteId}")
     public ResponseEntity<CarrinhoDto> listar(@PathVariable Long clienteId) {
         return ResponseEntity.ok(carrinhoService.verCarrinho(clienteId));
+    }
+
+    @DeleteMapping("/{clienteId}")
+    public ResponseEntity<String> apagar(@PathVariable Long clienteId) {
+        try {
+            carrinhoService.apagar(clienteId);
+            return ResponseEntity.ok().build();
+        } catch (Exception exception) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

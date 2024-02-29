@@ -20,4 +20,8 @@ public class ItemCarrinhoService {
     public List<ItemCarrinho> encontrarItensCarrinhoPorCarrinhoId(Long id) {
         return itemCarrinhoRepository.findAllByCarrinhoId(id);
     }
+
+    public void limparCarrinho(Long carrinhoId) {
+        itemCarrinhoRepository.deleteAllByCarrinhoId(carrinhoId);
+    }
 }

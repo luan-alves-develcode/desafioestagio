@@ -53,6 +53,11 @@ public class CarrinhoService {
         return new CarrinhoDto(carrinho, itensCarrinho);
     }
 
+    public void apagar(Long clienteId) {
+        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        itemCarrinhoService.limparCarrinho(carrinho.getId());
+    }
+
     private BigDecimal calcularTotal(BigDecimal total,BigDecimal precoProduto, Integer quantidade) {
         return total.add(precoProduto.multiply(BigDecimal.valueOf(quantidade)));
     }
