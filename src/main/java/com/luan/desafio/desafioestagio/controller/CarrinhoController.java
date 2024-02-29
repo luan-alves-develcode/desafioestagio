@@ -49,6 +49,7 @@ public class CarrinhoController {
     }
 
     @DeleteMapping("/{clienteId}")
+    @Transactional
     public ResponseEntity<String> apagar(@PathVariable Long clienteId) {
         try {
             carrinhoService.apagar(clienteId);
