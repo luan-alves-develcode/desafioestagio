@@ -10,6 +10,7 @@ import com.luan.desafio.desafioestagio.repository.CarrinhoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -33,18 +34,26 @@ public class CarrinhoService {
     }
 
     public void adicionarItemAoCarrinho(ItemParaoCarrinhoDto itemParaCarrinhoDto, Long clienteId) {
+        Integer quantidadeDoItem = itemParaCarrinhoDto.getQuantidade();
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
         Produto produto = produtoService.findProdutoById(itemParaCarrinhoDto.getProdutoId());
         ItemCarrinho item = new ItemCarrinho(produto, carrinho, itemParaCarrinhoDto.getQuantidade());
 
+        BigDecimal novoTotal = calcularTotal(carrinho.getTotal(), produto.getPreco(), quantidadeDoItem);
+        carrinho.setTotal(novoTotal);
+        carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() + quantidadeDoItem);
         carrinho.getItensCarrinho().add(item);
+
         itemCarrinhoService.salvar(item);
     }
 
     public CarrinhoDto verCarrinho(Long clienteId) {
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
         List<ItemCarrinho> itensCarrinho = itemCarrinhoService.encontrarItensCarrinhoPorCarrinhoId(carrinho.getId());
-        System.out.println(itensCarrinho);
         return new CarrinhoDto(carrinho, itensCarrinho);
+    }
+
+    private BigDecimal calcularTotal(BigDecimal total,BigDecimal precoProduto, Integer quantidade) {
+        return total.add(precoProduto.multiply(BigDecimal.valueOf(quantidade)));
     }
 }

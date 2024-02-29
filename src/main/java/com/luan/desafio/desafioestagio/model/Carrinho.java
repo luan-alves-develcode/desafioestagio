@@ -32,7 +32,9 @@ public class Carrinho {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Setter
     private BigDecimal total = BigDecimal.ZERO;
+    @Setter
     private Integer quantidadeItens = 0;
     @OneToOne
     @JoinColumn(name = "cliente_id")
