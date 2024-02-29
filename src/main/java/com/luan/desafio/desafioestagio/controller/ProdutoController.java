@@ -26,7 +26,7 @@ public class ProdutoController {
             Produto produto = produtoService.salvar(dto);
             return ResponseEntity.ok().build();
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
