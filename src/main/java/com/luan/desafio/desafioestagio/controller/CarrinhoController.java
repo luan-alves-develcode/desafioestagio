@@ -34,12 +34,12 @@ public class CarrinhoController {
 
     @PostMapping("/{clienteId}/adicionar")
     @Transactional
-    public ResponseEntity<String> adicionarItemAoCarrinho(@RequestBody ItemParaoCarrinhoDto itemParaCarrinhoDto, @PathVariable Long clienteId) {
+    public ResponseEntity<CarrinhoDto> adicionarItemAoCarrinho(@RequestBody ItemParaoCarrinhoDto itemParaCarrinhoDto, @PathVariable Long clienteId) {
         try {
             carrinhoService.adicionarItemAoCarrinho(itemParaCarrinhoDto, clienteId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(carrinhoService.verCarrinho(clienteId));
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
