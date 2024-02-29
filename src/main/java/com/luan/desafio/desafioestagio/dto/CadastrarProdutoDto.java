@@ -3,9 +3,11 @@ package com.luan.desafio.desafioestagio.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 
+@Getter
 public class CadastrarProdutoDto {
     @NotBlank
     private String nome;
