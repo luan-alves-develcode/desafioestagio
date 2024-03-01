@@ -5,7 +5,7 @@ import com.luan.desafio.desafioestagio.repository.ItemCarrinhoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashSet;
 
 @Service
 public class ItemCarrinhoService {
@@ -17,7 +17,7 @@ public class ItemCarrinhoService {
         itemCarrinhoRepository.save(item);
     }
 
-    public List<ItemCarrinho> encontrarItensCarrinhoPorCarrinhoId(Long id) {
+    public HashSet<ItemCarrinho> encontrarItensCarrinhoPorCarrinhoId(Long id) {
         return itemCarrinhoRepository.findAllByCarrinhoId(id);
     }
 
