@@ -2,6 +2,7 @@ package com.luan.desafio.desafioestagio.controller;
 
 import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
+import com.luan.desafio.desafioestagio.dto.ProdutoIdDto;
 import com.luan.desafio.desafioestagio.service.CarrinhoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,17 @@ public class CarrinhoController {
     public ResponseEntity<String> apagar(@PathVariable Long clienteId) {
         try {
             carrinhoService.apagar(clienteId);
+            return ResponseEntity.ok().build();
+        } catch (Exception exception) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{clienteId}/remover")
+    @Transactional
+    public ResponseEntity<String> removerItem(@PathVariable Long clienteId, @RequestBody ProdutoIdDto produtoIdDto) {
+        try {
+            carrinhoService.removerItem(clienteId, produtoIdDto.getProdutoId());
             return ResponseEntity.ok().build();
         } catch (Exception exception) {
             return ResponseEntity.notFound().build();
