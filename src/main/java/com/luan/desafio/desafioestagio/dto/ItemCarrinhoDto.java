@@ -8,11 +8,13 @@ import java.math.BigDecimal;
 
 @Getter
 public class ItemCarrinhoDto {
+    private Long id;
     private String nome;
     private BigDecimal preco;
     private Integer quantidade;
 
     public ItemCarrinhoDto(@NotNull ItemCarrinho itemCarrinho) {
+        this.id = itemCarrinho.getProduto().getId();
         this.nome = itemCarrinho.getProduto().getNome();
         this.preco = itemCarrinho.getProduto().getPreco();
         this.quantidade = itemCarrinho.getQuantidade();
