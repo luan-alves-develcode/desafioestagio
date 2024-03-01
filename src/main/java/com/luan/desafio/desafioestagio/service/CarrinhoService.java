@@ -67,7 +67,7 @@ public class CarrinhoService {
 
     public void removerItem(Long clienteId, Long produtoId) {
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
-
+        itemCarrinhoService.removerItemPorCarrinhoIdeProdutoId(carrinho.getId(), produtoId);
     }
 
     private boolean verificaSeProdutoExisteNoCarrinho(Carrinho carrinho, Long produtoId) {

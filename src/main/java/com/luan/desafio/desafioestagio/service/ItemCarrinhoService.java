@@ -24,4 +24,8 @@ public class ItemCarrinhoService {
     public void limparCarrinho(Long carrinhoId) {
         itemCarrinhoRepository.deleteAllByCarrinhoId(carrinhoId);
     }
+
+    public void removerItemPorCarrinhoIdeProdutoId(Long carrinhoId, Long produtoId) {
+        itemCarrinhoRepository.deleteByCarrinhoIdAndProdutoId(carrinhoId, produtoId);
+    }
 }
