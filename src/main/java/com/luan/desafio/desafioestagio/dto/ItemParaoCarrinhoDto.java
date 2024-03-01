@@ -1,5 +1,6 @@
 package com.luan.desafio.desafioestagio.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -7,6 +8,6 @@ import lombok.Getter;
 public class ItemParaoCarrinhoDto {
     @NotNull
     private Long produtoId;
-    @NotNull
+    @Nullable
     private Integer quantidade;
 }

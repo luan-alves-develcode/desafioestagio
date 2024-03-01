@@ -37,10 +37,13 @@ public class CarrinhoService {
     }
 
     public void adicionarItemAoCarrinho(ItemParaoCarrinhoDto itemParaCarrinhoDto, Long clienteId) {
-        Integer quantidadeDoItem = itemParaCarrinhoDto.getQuantidade();
+        Integer quantidadeDoItem = 1;
+        if (itemParaCarrinhoDto.getQuantidade() != null) {
+            quantidadeDoItem = itemParaCarrinhoDto.getQuantidade();
+        }
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
         Produto produto = produtoService.findProdutoById(itemParaCarrinhoDto.getProdutoId());
-        ItemCarrinho item = new ItemCarrinho(produto, carrinho, itemParaCarrinhoDto.getQuantidade());
+        ItemCarrinho item = new ItemCarrinho(produto, carrinho, quantidadeDoItem);
 
         BigDecimal novoTotal = somaItemCarrinhoDoTotalCarrinho(carrinho.getTotal(), produto.getPreco(), quantidadeDoItem);
 
@@ -85,10 +88,10 @@ public class CarrinhoService {
 
     private boolean verificaSeProdutoExisteNoCarrinho(Carrinho carrinho, Long produtoId) {
         Set<ItemCarrinho> itensCarrinho = carrinho.getItensCarrinho();
-        for (ItemCarrinho item: itensCarrinho) {
-          if (item.getProduto().getId().equals(produtoId)) {
-            return true;
-          }
+        for (ItemCarrinho item : itensCarrinho) {
+            if (item.getProduto().getId().equals(produtoId)) {
+                return true;
+            }
         }
         return false;
     }
