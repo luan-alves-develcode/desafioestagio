@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 
 @Service
 public class ItemCarrinhoService {
 
     @Autowired
-    ItemCarrinhoRepository itemCarrinhoRepository;
+    private ItemCarrinhoRepository itemCarrinhoRepository;
 
     public void salvar(ItemCarrinho item) {
         itemCarrinhoRepository.save(item);
@@ -27,5 +28,9 @@ public class ItemCarrinhoService {
 
     public void removerItemPorCarrinhoIdeProdutoId(Long carrinhoId, Long produtoId) {
         itemCarrinhoRepository.deleteByCarrinhoIdAndProdutoId(carrinhoId, produtoId);
+    }
+
+    public Optional<ItemCarrinho> encontrarPorCarrinhoIdEProdutoId(Long carrinhoId, Long produtoId) {
+        return itemCarrinhoRepository.findByCarrinhoIdAndProdutoId(carrinhoId, produtoId);
     }
 }
