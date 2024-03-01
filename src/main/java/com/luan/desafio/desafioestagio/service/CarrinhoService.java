@@ -2,6 +2,7 @@ package com.luan.desafio.desafioestagio.service;
 
 import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
+import com.luan.desafio.desafioestagio.exception.ValidacaoException;
 import com.luan.desafio.desafioestagio.model.Carrinho;
 import com.luan.desafio.desafioestagio.model.Cliente;
 import com.luan.desafio.desafioestagio.model.ItemCarrinho;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -40,7 +42,8 @@ public class CarrinhoService {
         Produto produto = produtoService.findProdutoById(itemParaCarrinhoDto.getProdutoId());
         ItemCarrinho item = new ItemCarrinho(produto, carrinho, itemParaCarrinhoDto.getQuantidade());
 
-        BigDecimal novoTotal = calcularTotal(carrinho.getTotal(), produto.getPreco(), quantidadeDoItem);
+        BigDecimal novoTotal = somaItemCarrinhoDoTotalCarrinho(carrinho.getTotal(), produto.getPreco(), quantidadeDoItem);
+
         carrinho.setTotal(novoTotal);
         carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() + quantidadeDoItem);
         carrinho.getItensCarrinho().add(item);
@@ -61,13 +64,23 @@ public class CarrinhoService {
         carrinho.setTotal(BigDecimal.ZERO);
     }
 
-    private BigDecimal calcularTotal(BigDecimal total,BigDecimal precoProduto, Integer quantidade) {
-        return total.add(precoProduto.multiply(BigDecimal.valueOf(quantidade)));
-    }
-
     public void removerItem(Long clienteId, Long produtoId) {
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
-        itemCarrinhoService.removerItemPorCarrinhoIdeProdutoId(carrinho.getId(), produtoId);
+        Optional<ItemCarrinho> optional = itemCarrinhoService.encontrarPorCarrinhoIdEProdutoId(carrinho.getId(), produtoId);
+
+        if (optional.isPresent()) {
+            ItemCarrinho itemCarrinho = optional.get();
+
+            atualizarValoresDoCarrinhoAposRemoverItem(carrinho, itemCarrinho);
+
+            itemCarrinhoService.removerItemPorCarrinhoIdeProdutoId(carrinho.getId(), produtoId);
+        } else {
+            throw new ValidacaoException("Item não encontrado.");
+        }
+    }
+
+    private BigDecimal somaItemCarrinhoDoTotalCarrinho(BigDecimal total, BigDecimal precoProduto, Integer quantidade) {
+        return total.add(precoProduto.multiply(BigDecimal.valueOf(quantidade)));
     }
 
     private boolean verificaSeProdutoExisteNoCarrinho(Carrinho carrinho, Long produtoId) {
@@ -78,5 +91,10 @@ public class CarrinhoService {
           }
         }
         return false;
+    }
+
+    private void atualizarValoresDoCarrinhoAposRemoverItem(Carrinho carrinho, ItemCarrinho itemCarrinho) {
+        carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() - itemCarrinho.getQuantidade());
+        carrinho.setTotal(carrinho.getTotal().subtract(itemCarrinho.getProduto().getPreco().multiply(BigDecimal.valueOf(itemCarrinho.getQuantidade()))));
     }
 }
