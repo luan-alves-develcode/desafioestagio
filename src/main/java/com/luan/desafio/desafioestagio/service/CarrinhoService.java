@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -50,7 +50,7 @@ public class CarrinhoService {
 
     public CarrinhoDto verCarrinho(Long clienteId) {
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
-        List<ItemCarrinho> itensCarrinho = itemCarrinhoService.encontrarItensCarrinhoPorCarrinhoId(carrinho.getId());
+        HashSet<ItemCarrinho> itensCarrinho = itemCarrinhoService.encontrarItensCarrinhoPorCarrinhoId(carrinho.getId());
         return new CarrinhoDto(carrinho, itensCarrinho);
     }
 
@@ -63,6 +63,11 @@ public class CarrinhoService {
 
     private BigDecimal calcularTotal(BigDecimal total,BigDecimal precoProduto, Integer quantidade) {
         return total.add(precoProduto.multiply(BigDecimal.valueOf(quantidade)));
+    }
+
+    public void removerItem(Long clienteId, Long produtoId) {
+        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+
     }
 
     private boolean verificaSeProdutoExisteNoCarrinho(Carrinho carrinho, Long produtoId) {
