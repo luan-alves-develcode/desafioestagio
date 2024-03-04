@@ -88,9 +88,12 @@ public class CarrinhoService {
 
     public Set<ItemCarrinho> atualizar(Long clienteId, AtualizarCarrinhoDto atualizarCarrinhoDto) {
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
-        System.out.println(atualizarCarrinhoDto);
-        HashMap<Long, ItemCarrinho> mapItemCarrinho = new HashMap<>(carrinho.getItensCarrinho().stream().collect(Collectors.toMap(item -> item.getProduto().getId(), item -> item)));
+
+        HashMap<Long, ItemCarrinho> mapItemCarrinho = new HashMap<>(carrinho.getItensCarrinho()
+                .stream()
+                .collect(Collectors.toMap(item -> item.getProduto().getId(), item -> item)));
         HashMap<Long, ItemCarrinho> diferencaItemCarrinho = new HashMap<>();
+
         for (ItemCarrinhoDto dtoItemCarrinho : atualizarCarrinhoDto.getCarrinho()) {
             if (mapItemCarrinho.containsKey(dtoItemCarrinho.getId())) {
                 ItemCarrinho atualizadoItemCarrinho = mapItemCarrinho.get(dtoItemCarrinho.getId());

@@ -1,11 +1,12 @@
 package com.luan.desafio.desafioestagio.dto;
 
+import jakarta.validation.Valid;
 import lombok.Getter;
 
-import java.util.HashSet;
 import java.util.List;
 
 @Getter
 public class AtualizarCarrinhoDto {
+    @Valid
     List<ItemCarrinhoDto> carrinho;
 }

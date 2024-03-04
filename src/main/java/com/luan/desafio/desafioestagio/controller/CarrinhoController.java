@@ -5,6 +5,7 @@ import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ProdutoIdDto;
 import com.luan.desafio.desafioestagio.service.CarrinhoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,7 @@ public class CarrinhoController {
 
     @PutMapping("/{clienteId}")
     @Transactional
-    public ResponseEntity<String> atualizar(@PathVariable Long clienteId, @RequestBody AtualizarCarrinhoDto atualizarCarrinhoDto) {
+    public ResponseEntity<String> atualizar(@PathVariable Long clienteId, @RequestBody @Valid AtualizarCarrinhoDto atualizarCarrinhoDto) {
         try {
             carrinhoService.atualizar(clienteId, atualizarCarrinhoDto);
             return ResponseEntity.ok().build();
@@ -48,7 +49,7 @@ public class CarrinhoController {
 
     @PostMapping("/{clienteId}/adicionar")
     @Transactional
-    public ResponseEntity<CarrinhoDto> adicionarItemAoCarrinho(@RequestBody ItemParaoCarrinhoDto itemParaCarrinhoDto, @PathVariable Long clienteId) {
+    public ResponseEntity<CarrinhoDto> adicionarItemAoCarrinho(@RequestBody @Valid ItemParaoCarrinhoDto itemParaCarrinhoDto, @PathVariable Long clienteId) {
         try {
             carrinhoService.adicionarItemAoCarrinho(itemParaCarrinhoDto, clienteId);
             return ResponseEntity.ok(carrinhoService.verCarrinho(clienteId));
@@ -75,7 +76,7 @@ public class CarrinhoController {
 
     @DeleteMapping("/{clienteId}/remover")
     @Transactional
-    public ResponseEntity<String> removerItem(@PathVariable Long clienteId, @RequestBody ProdutoIdDto produtoIdDto) {
+    public ResponseEntity<String> removerItem(@PathVariable Long clienteId, @RequestBody @Valid ProdutoIdDto produtoIdDto) {
         try {
             carrinhoService.removerItem(clienteId, produtoIdDto.getProdutoId());
             return ResponseEntity.ok().build();
