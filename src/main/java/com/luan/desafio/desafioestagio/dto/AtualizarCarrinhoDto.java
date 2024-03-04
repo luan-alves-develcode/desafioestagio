@@ -8,5 +8,5 @@ import java.util.List;
 @Getter
 public class AtualizarCarrinhoDto {
     @Valid
-    List<ItemCarrinhoDto> carrinho;
+    List<AtualizarItemCarrinhoDto> carrinho;
 }

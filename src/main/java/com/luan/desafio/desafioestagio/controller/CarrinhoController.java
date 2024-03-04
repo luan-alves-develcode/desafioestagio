@@ -38,12 +38,11 @@ public class CarrinhoController {
 
     @PutMapping("/{clienteId}")
     @Transactional
-    public ResponseEntity<String> atualizar(@PathVariable Long clienteId, @RequestBody @Valid AtualizarCarrinhoDto atualizarCarrinhoDto) {
+    public ResponseEntity<CarrinhoDto> atualizar(@PathVariable Long clienteId, @RequestBody @Valid AtualizarCarrinhoDto atualizarCarrinhoDto) {
         try {
-            carrinhoService.atualizar(clienteId, atualizarCarrinhoDto);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(carrinhoService.atualizar(clienteId, atualizarCarrinhoDto));
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
