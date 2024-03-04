@@ -1,6 +1,8 @@
 package com.luan.desafio.desafioestagio.service;
 
+import com.luan.desafio.desafioestagio.dto.AtualizarCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
+import com.luan.desafio.desafioestagio.dto.ItemCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
 import com.luan.desafio.desafioestagio.exception.ValidacaoException;
 import com.luan.desafio.desafioestagio.model.Carrinho;
@@ -12,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CarrinhoService {
@@ -80,6 +84,26 @@ public class CarrinhoService {
         } else {
             throw new ValidacaoException("Item não encontrado.");
         }
+    }
+
+    public Set<ItemCarrinho> atualizar(Long clienteId, AtualizarCarrinhoDto atualizarCarrinhoDto) {
+        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        System.out.println(atualizarCarrinhoDto);
+        HashMap<Long, ItemCarrinho> mapItemCarrinho = new HashMap<>(carrinho.getItensCarrinho().stream().collect(Collectors.toMap(item -> item.getProduto().getId(), item -> item)));
+        HashMap<Long, ItemCarrinho> diferencaItemCarrinho = new HashMap<>();
+        for (ItemCarrinhoDto dtoItemCarrinho : atualizarCarrinhoDto.getCarrinho()) {
+            if (mapItemCarrinho.containsKey(dtoItemCarrinho.getId())) {
+                ItemCarrinho atualizadoItemCarrinho = mapItemCarrinho.get(dtoItemCarrinho.getId());
+                atualizadoItemCarrinho.setQuantidade(dtoItemCarrinho.getQuantidade());
+                diferencaItemCarrinho.put(dtoItemCarrinho.getId(), atualizadoItemCarrinho);
+            }
+        }
+
+        for (ItemCarrinho itemCarrinho : diferencaItemCarrinho.values()) {
+            itemCarrinhoService.salvar(itemCarrinho);
+        }
+
+        return carrinhoRepository.findCarrinhoByClienteId(clienteId).getItensCarrinho();
     }
 
     private BigDecimal somaItemCarrinhoDoTotalCarrinho(BigDecimal total, BigDecimal precoProduto, Integer quantidade) {

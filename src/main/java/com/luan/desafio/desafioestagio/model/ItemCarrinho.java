@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -29,6 +30,7 @@ public class ItemCarrinho {
     @JoinColumn(name = "carrinho_id")
     Carrinho carrinho;
 
+    @Setter
     Integer quantidade;
 
     public ItemCarrinho(Produto produto, Carrinho carrinho, Integer quantidade) {

@@ -1,5 +1,6 @@
 package com.luan.desafio.desafioestagio.controller;
 
+import com.luan.desafio.desafioestagio.dto.AtualizarCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ProdutoIdDto;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,17 @@ public class CarrinhoController {
     public ResponseEntity<String> criar(@PathVariable Long clienteId) {
         try {
             carrinhoService.criar(clienteId);
+            return ResponseEntity.ok().build();
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+    @PutMapping("/{clienteId}")
+    @Transactional
+    public ResponseEntity<String> atualizar(@PathVariable Long clienteId, @RequestBody AtualizarCarrinhoDto atualizarCarrinhoDto) {
+        try {
+            carrinhoService.atualizar(clienteId, atualizarCarrinhoDto);
             return ResponseEntity.ok().build();
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());

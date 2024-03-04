@@ -2,11 +2,13 @@ package com.luan.desafio.desafioestagio.dto;
 
 import com.luan.desafio.desafioestagio.model.ItemCarrinho;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Getter
+@AllArgsConstructor
 public class ItemCarrinhoDto {
     private Long id;
     private String nome;
