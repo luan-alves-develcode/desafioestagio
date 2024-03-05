@@ -36,4 +36,10 @@ public class ItemVenda {
         this.venda = venda;
         this.quantidade = quantidade;
     }
+
+    public ItemVenda(ItemCarrinho itemCarrinho, Venda venda) {
+        this.produto = itemCarrinho.getProduto();
+        this.quantidade = itemCarrinho.getQuantidade();
+        this.venda = venda;
+    }
 }
