@@ -4,6 +4,7 @@ import com.luan.desafio.desafioestagio.dto.AtualizarCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ProdutoIdDto;
+import com.luan.desafio.desafioestagio.model.Venda;
 import com.luan.desafio.desafioestagio.service.CarrinhoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/carrinhos")
 public class CarrinhoController {
@@ -31,6 +34,17 @@ public class CarrinhoController {
         try {
             carrinhoService.criar(clienteId);
             return ResponseEntity.ok().build();
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+    @PostMapping("/{clienteId}/finalizar")
+    @Transactional
+    public ResponseEntity<String> finalizar(@PathVariable Long clienteId) {
+        try {
+            Venda venda = carrinhoService.finalizar(clienteId);
+            return ResponseEntity.created(URI.create("/vendas/" + venda.getId())).build();
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
