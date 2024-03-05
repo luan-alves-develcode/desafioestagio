@@ -3,7 +3,6 @@ package com.luan.desafio.desafioestagio.service;
 import com.luan.desafio.desafioestagio.dto.AtualizarCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.AtualizarItemCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.CarrinhoDto;
-import com.luan.desafio.desafioestagio.dto.ItemCarrinhoDto;
 import com.luan.desafio.desafioestagio.dto.ItemParaoCarrinhoDto;
 import com.luan.desafio.desafioestagio.exception.ValidacaoException;
 import com.luan.desafio.desafioestagio.model.Carrinho;
@@ -129,7 +128,7 @@ public class CarrinhoService {
         return carrinhoDto;
     }
 
-    public void finalizar(Long clienteId) {
+    public Venda finalizar(Long clienteId) {
         Cliente cliente = clienteService.findById(clienteId);
         Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
 
@@ -147,6 +146,7 @@ public class CarrinhoService {
         });
 
         this.apagar(clienteId);
+        return vendaSalva;
     }
 
     private BigDecimal somaItemCarrinhoDoTotalCarrinho(BigDecimal total, BigDecimal precoProduto, Integer quantidade) {
