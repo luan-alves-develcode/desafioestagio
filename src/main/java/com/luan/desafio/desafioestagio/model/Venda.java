@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "vendas")
 public class Venda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +33,10 @@ public class Venda {
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY)
     private Set<ItemVenda> itensVenda = new HashSet<>();
 
-    public Venda(Cliente cliente) {
+    public Venda(Cliente cliente, BigDecimal total, Integer quantidadeItens, Set itensVenda) {
         this.cliente = cliente;
+        this.total = total;
+        this.quantidadeItens = quantidadeItens;
+        this.itensVenda = itensVenda;
     }
 }
