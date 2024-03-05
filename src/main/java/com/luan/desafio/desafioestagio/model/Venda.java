@@ -9,8 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -18,14 +18,13 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
+@Getter
 @Table(name = "vendas")
 public class Venda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Setter
     private BigDecimal total;
-    @Setter
     private Integer quantidadeItens;
     @OneToOne
     @JoinColumn(name = "cliente_id")
@@ -33,7 +32,7 @@ public class Venda {
     @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY)
     private Set<ItemVenda> itensVenda = new HashSet<>();
 
-    public Venda(Cliente cliente, BigDecimal total, Integer quantidadeItens, Set itensVenda) {
+    public Venda(Cliente cliente, BigDecimal total, Integer quantidadeItens) {
         this.cliente = cliente;
         this.total = total;
         this.quantidadeItens = quantidadeItens;
