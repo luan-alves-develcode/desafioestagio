@@ -7,4 +7,4 @@
 - [x] Remoção de produto no carrinho
 - [x] Consultar as informações do carrinho
 - [x] Limpar o carrinho
-- [ ] Finalizar o carrinho
+- [x] Finalizar o carrinho
