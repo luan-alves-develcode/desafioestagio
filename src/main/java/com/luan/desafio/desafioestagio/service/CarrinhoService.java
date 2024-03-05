@@ -9,7 +9,9 @@ import com.luan.desafio.desafioestagio.exception.ValidacaoException;
 import com.luan.desafio.desafioestagio.model.Carrinho;
 import com.luan.desafio.desafioestagio.model.Cliente;
 import com.luan.desafio.desafioestagio.model.ItemCarrinho;
+import com.luan.desafio.desafioestagio.model.ItemVenda;
 import com.luan.desafio.desafioestagio.model.Produto;
+import com.luan.desafio.desafioestagio.model.Venda;
 import com.luan.desafio.desafioestagio.repository.CarrinhoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,12 @@ public class CarrinhoService {
 
     @Autowired
     private ItemCarrinhoService itemCarrinhoService;
+
+    @Autowired
+    private VendaService vendaService;
+
+    @Autowired
+    private ItemVendaService itemVendaService;
 
     public void criar(Long clienteId) {
         Cliente cliente = clienteService.findById(clienteId);
@@ -119,6 +127,26 @@ public class CarrinhoService {
         CarrinhoDto carrinhoDto = new CarrinhoDto(carrinhoRepository.findCarrinhoByClienteId(clienteId), carrinhoRepository.findCarrinhoByClienteId(clienteId).getItensCarrinho());
 
         return carrinhoDto;
+    }
+
+    public void finalizar(Long clienteId) {
+        Cliente cliente = clienteService.findById(clienteId);
+        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+
+        if (carrinho.getItensCarrinho().isEmpty()) {
+            throw new ValidacaoException("Carrinho vazio não pode ser finalizado.");
+        }
+
+        Venda novaVenda = new Venda(cliente, carrinho.getTotal(), carrinho.getQuantidadeItens());
+        System.out.println(cliente.getId() + " " + carrinho.getId() + " " + carrinho.getItensCarrinho());
+        System.out.println("venda_cliente_id: " + novaVenda.getCliente().getId() + " Qtd itens: " + novaVenda.getQuantidadeItens() +  " Total: " + novaVenda.getTotal());
+        Venda vendaSalva = vendaService.salvar(novaVenda);
+
+        carrinho.getItensCarrinho().forEach(itemCarrinho -> {
+            itemVendaService.salvar(new ItemVenda(itemCarrinho, vendaSalva));
+        });
+
+        this.apagar(clienteId);
     }
 
     private BigDecimal somaItemCarrinhoDoTotalCarrinho(BigDecimal total, BigDecimal precoProduto, Integer quantidade) {
