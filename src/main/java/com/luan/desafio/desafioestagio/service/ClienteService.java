@@ -14,7 +14,7 @@ public class ClienteService {
     public Cliente salvar(CadastrarClienteDto dto) {
         boolean jaCadastrado = clienteRepository.existsByCpfOrEmail(dto.getCpf(), dto.getEmail());
         if (jaCadastrado) {
-            throw new ValidacaoException("Dados já cadastrados por outro abrigo!");
+            throw new ValidacaoException("Email ou senha já cadastrados.");
         }
         return clienteRepository.save(new Cliente(dto));
     }
