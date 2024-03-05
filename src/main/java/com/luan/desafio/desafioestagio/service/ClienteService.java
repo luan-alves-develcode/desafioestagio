@@ -1,6 +1,7 @@
 package com.luan.desafio.desafioestagio.service;
 
 import com.luan.desafio.desafioestagio.dto.CadastrarClienteDto;
+import com.luan.desafio.desafioestagio.exception.ValidacaoException;
 import com.luan.desafio.desafioestagio.model.Cliente;
 import com.luan.desafio.desafioestagio.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,11 @@ public class ClienteService {
     @Autowired
     ClienteRepository clienteRepository;
     public Cliente salvar(CadastrarClienteDto dto) {
-        Cliente cliente = new Cliente(dto);
-        return clienteRepository.save(cliente);
+        boolean jaCadastrado = clienteRepository.existsByCpfOrEmail(dto.getCpf(), dto.getEmail());
+        if (jaCadastrado) {
+            throw new ValidacaoException("Dados já cadastrados por outro abrigo!");
+        }
+        return clienteRepository.save(new Cliente(dto));
     }
     public Cliente findById(Long id) {
         return clienteRepository.getReferenceById(id);
