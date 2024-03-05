@@ -20,7 +20,7 @@ public class ItemCarrinhoDto {
     public ItemCarrinhoDto(@NotNull ItemCarrinho itemCarrinho) {
         this.id = itemCarrinho.getProduto().getId();
         this.nome = itemCarrinho.getProduto().getNome();
-        this.preco = itemCarrinho.getProduto().getPreco();
+        this.preco = itemCarrinho.getProduto().getPrecoUnitario();
         this.quantidade = itemCarrinho.getQuantidade();
     }
 }

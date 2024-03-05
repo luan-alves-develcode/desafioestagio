@@ -12,10 +12,10 @@ public class ProdutoDto {
     @NotBlank
     private final String nome;
     @NotNull
-    private final BigDecimal preco;
+    private final BigDecimal precoUnitario;
 
     public ProdutoDto(@NotNull Produto produto) {
         this.nome = produto.getNome();
-        this.preco = produto.getPreco();
+        this.precoUnitario = produto.getPrecoUnitario();
     }
 }

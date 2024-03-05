@@ -26,20 +26,20 @@ public class Produto {
     @NotBlank
     private String descricao;
     @NotNull
-    private BigDecimal preco;
+    private BigDecimal precoUnitario;
     @NotNull
     private Integer estoque = 0;
-    public Produto(String nome, String descricao, BigDecimal preco, Integer estoque) {
+    public Produto(String nome, String descricao, BigDecimal precoUnitario, Integer estoque) {
         this.nome = nome;
         this.descricao = descricao;
-        this.preco = preco;
+        this.precoUnitario = precoUnitario;
         this.estoque = estoque;
     }
 
     public Produto(CadastrarProdutoDto dto) {
         this.nome = dto.getNome();
         this.descricao = dto.getDescricao();
-        this.preco = dto.getPreco();
+        this.precoUnitario = dto.getPreco();
         this.estoque = dto.getEstoque();
     }
 
@@ -49,7 +49,7 @@ public class Produto {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
-                ", preco=" + preco +
+                ", preco=" + precoUnitario +
                 ", estoque=" + estoque +
                 '}';
     }

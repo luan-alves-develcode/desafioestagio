@@ -57,7 +57,7 @@ public class CarrinhoService {
         Produto produto = produtoService.findProdutoById(itemParaCarrinhoDto.getProdutoId());
         ItemCarrinho item = new ItemCarrinho(produto, carrinho, quantidadeDoItem);
 
-        BigDecimal novoTotal = somaItemCarrinhoDoTotalCarrinho(carrinho.getTotal(), produto.getPreco(), quantidadeDoItem);
+        BigDecimal novoTotal = somaItemCarrinhoDoTotalCarrinho(carrinho.getTotal(), produto.getPrecoUnitario(), quantidadeDoItem);
 
         carrinho.setTotal(novoTotal);
         carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() + quantidadeDoItem);
@@ -107,7 +107,7 @@ public class CarrinhoService {
                 ItemCarrinho atualizadoItemCarrinho = mapItemCarrinho.get(dtoItemCarrinho.getId());
                 Integer novaQuantidadeDeItens = dtoItemCarrinho.getQuantidade() - atualizadoItemCarrinho.getQuantidade();
                 BigDecimal novoTotalDoCarrinho = somaItemCarrinhoDoTotalCarrinho(carrinho.getTotal(),
-                        atualizadoItemCarrinho.getProduto().getPreco(),
+                        atualizadoItemCarrinho.getProduto().getPrecoUnitario(),
                         novaQuantidadeDeItens);
 
                 atualizadoItemCarrinho.setQuantidade(dtoItemCarrinho.getQuantidade());
@@ -165,6 +165,6 @@ public class CarrinhoService {
 
     private void atualizarValoresDoCarrinhoAposRemoverItem(Carrinho carrinho, ItemCarrinho itemCarrinho) {
         carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() - itemCarrinho.getQuantidade());
-        carrinho.setTotal(carrinho.getTotal().subtract(itemCarrinho.getProduto().getPreco().multiply(BigDecimal.valueOf(itemCarrinho.getQuantidade()))));
+        carrinho.setTotal(carrinho.getTotal().subtract(itemCarrinho.getProduto().getPrecoUnitario().multiply(BigDecimal.valueOf(itemCarrinho.getQuantidade()))));
     }
 }
