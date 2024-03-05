@@ -6,6 +6,4 @@ CREATE TABLE vendas (
    CONSTRAINT pk_vendas PRIMARY KEY (id)
 );
 
-ALTER TABLE vendas ADD CONSTRAINT uc_vendas_cliente UNIQUE (cliente_id);
-
 ALTER TABLE vendas ADD CONSTRAINT FK_VENDAS_ON_CLIENTE FOREIGN KEY (cliente_id) REFERENCES clientes (id);
