@@ -7,6 +7,8 @@ import com.luan.desafio.desafioestagio.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ClienteService {
     @Autowired
@@ -19,6 +21,7 @@ public class ClienteService {
         return clienteRepository.save(new Cliente(dto));
     }
     public Cliente encontrarPorId(Long id) {
-        return clienteRepository.getReferenceById(id);
+        Optional<Cliente> optional = clienteRepository.findById(id);
+        return optional.orElseThrow(() -> new ValidacaoException("Cliente não encontrado"));
     }
 }
