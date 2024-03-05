@@ -7,6 +7,7 @@ import com.luan.desafio.desafioestagio.dto.ProdutoIdDto;
 import com.luan.desafio.desafioestagio.model.Venda;
 import com.luan.desafio.desafioestagio.service.CarrinhoService;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class CarrinhoController {
         try {
             carrinhoService.criar(clienteId);
             return ResponseEntity.ok().build();
-        } catch (Exception exception) {
+        } catch (ValidationException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
     }
