@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class VendaService {
     @Autowired
-    VendaRepository vendaRepository;
+    private VendaRepository vendaRepository;
 
     public Venda salvar(Venda venda) {
         return this.vendaRepository.save(venda);
