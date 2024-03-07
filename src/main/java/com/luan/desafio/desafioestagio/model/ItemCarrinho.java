@@ -21,10 +21,12 @@ public class ItemCarrinho {
     ItemCarrinhoKey id = new ItemCarrinhoKey();
 
     @ManyToOne
+    @MapsId("produtoId")
     @JoinColumn(name = "produto_id", insertable = false, updatable = false)
     Produto produto;
 
     @ManyToOne
+    @MapsId("carrinhoId")
     @JoinColumn(name = "carrinho_id", insertable = false, updatable = false)
     Carrinho carrinho;
 
