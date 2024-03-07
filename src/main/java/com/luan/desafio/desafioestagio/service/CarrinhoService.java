@@ -57,8 +57,15 @@ public class CarrinhoService {
         if (optional.isPresent()) {
             carrinho = optional.get();
         } else {
-            throw new ValidacaoException("");
+            throw new ValidacaoException("Carrinho não encontrado para o cliente.");
         }
+
+        carrinho.getItensCarrinho().forEach(item -> {
+            if (item.getProduto().getId() == itemParaCarrinhoDto.getProdutoId()) {
+                throw new ValidacaoException("Produto já existente no carrinho.");
+            }
+        });
+
         Produto produto = produtoService.findProdutoById(itemParaCarrinhoDto.getProdutoId());
         ItemCarrinho item = new ItemCarrinho(produto, carrinho, quantidadeDoItem);
 
@@ -67,6 +74,7 @@ public class CarrinhoService {
         carrinho.setTotal(novoTotal);
         carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() + quantidadeDoItem);
         carrinho.getItensCarrinho().add(item);
+        System.out.println(item);
 
         itemCarrinhoService.salvar(item);
     }
