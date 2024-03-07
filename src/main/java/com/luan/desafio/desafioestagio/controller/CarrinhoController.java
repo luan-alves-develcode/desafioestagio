@@ -32,44 +32,28 @@ public class CarrinhoController {
     @PostMapping("/{clienteId}")
     @Transactional
     public ResponseEntity<String> criar(@PathVariable Long clienteId) {
-        try {
-            carrinhoService.criar(clienteId);
-            return ResponseEntity.ok().build();
-        } catch (ValidationException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
-        }
+        carrinhoService.criar(clienteId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{clienteId}/finalizar")
     @Transactional
     public ResponseEntity<String> finalizar(@PathVariable Long clienteId) {
-        try {
-            Venda venda = carrinhoService.finalizar(clienteId);
-            return ResponseEntity.created(URI.create("/vendas/" + venda.getId())).build();
-        } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
-        }
+        Venda venda = carrinhoService.finalizar(clienteId);
+        return ResponseEntity.created(URI.create("/vendas/" + venda.getId())).build();
     }
 
     @PutMapping("/{clienteId}")
     @Transactional
     public ResponseEntity<CarrinhoDto> atualizar(@PathVariable Long clienteId, @RequestBody @Valid AtualizarCarrinhoDto atualizarCarrinhoDto) {
-        try {
-            return ResponseEntity.ok(carrinhoService.atualizar(clienteId, atualizarCarrinhoDto));
-        } catch (Exception exception) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(carrinhoService.atualizar(clienteId, atualizarCarrinhoDto));
     }
 
     @PostMapping("/{clienteId}/adicionar")
     @Transactional
     public ResponseEntity<CarrinhoDto> adicionarItemAoCarrinho(@RequestBody @Valid ItemParaoCarrinhoDto itemParaCarrinhoDto, @PathVariable Long clienteId) {
-        try {
-            carrinhoService.adicionarItemAoCarrinho(itemParaCarrinhoDto, clienteId);
-            return ResponseEntity.ok(carrinhoService.verCarrinho(clienteId));
-        } catch (Exception exception) {
-            return ResponseEntity.badRequest().build();
-        }
+        carrinhoService.adicionarItemAoCarrinho(itemParaCarrinhoDto, clienteId);
+        return ResponseEntity.ok(carrinhoService.verCarrinho(clienteId));
     }
 
     @GetMapping("/{clienteId}")
@@ -80,22 +64,14 @@ public class CarrinhoController {
     @DeleteMapping("/{clienteId}")
     @Transactional
     public ResponseEntity<String> apagar(@PathVariable Long clienteId) {
-        try {
-            carrinhoService.apagar(clienteId);
-            return ResponseEntity.ok().build();
-        } catch (Exception exception) {
-            return ResponseEntity.notFound().build();
-        }
+        carrinhoService.apagar(clienteId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{clienteId}/remover")
     @Transactional
     public ResponseEntity<String> removerItem(@PathVariable Long clienteId, @RequestBody @Valid ProdutoIdDto produtoIdDto) {
-        try {
-            carrinhoService.removerItem(clienteId, produtoIdDto.getProdutoId());
-            return ResponseEntity.ok().build();
-        } catch (Exception exception) {
-            return ResponseEntity.notFound().build();
-        }
+        carrinhoService.removerItem(clienteId, produtoIdDto.getProdutoId());
+        return ResponseEntity.ok().build();
     }
 }
