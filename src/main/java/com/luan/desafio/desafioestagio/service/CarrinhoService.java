@@ -44,8 +44,7 @@ public class CarrinhoService {
 
     public void criar(Long clienteId) {
         Cliente cliente = clienteService.encontrarPorId(clienteId);
-        Carrinho carrinho = new Carrinho(cliente);
-        carrinhoRepository.save(carrinho);
+        Carrinho carrinho = carrinhoRepository.save(new Carrinho(cliente));
     }
 
     public void adicionarItemAoCarrinho(ItemParaoCarrinhoDto itemParaCarrinhoDto, Long clienteId) {
@@ -53,7 +52,13 @@ public class CarrinhoService {
         if (itemParaCarrinhoDto.getQuantidade() != null) {
             quantidadeDoItem = itemParaCarrinhoDto.getQuantidade();
         }
-        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Optional<Carrinho> optional = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Carrinho carrinho;
+        if (optional.isPresent()) {
+            carrinho = optional.get();
+        } else {
+            throw new ValidacaoException("");
+        }
         Produto produto = produtoService.findProdutoById(itemParaCarrinhoDto.getProdutoId());
         ItemCarrinho item = new ItemCarrinho(produto, carrinho, quantidadeDoItem);
 
@@ -67,20 +72,25 @@ public class CarrinhoService {
     }
 
     public CarrinhoDto verCarrinho(Long clienteId) {
-        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Optional<Carrinho> optional = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Carrinho carrinho = optional.orElseThrow(() -> new ValidacaoException("Carrinho não encontrado para o usuário informado."));
+
         HashSet<ItemCarrinho> itensCarrinho = itemCarrinhoService.encontrarItensCarrinhoPorCarrinhoId(carrinho.getId());
         return new CarrinhoDto(carrinho, itensCarrinho);
     }
 
     public void apagar(Long clienteId) {
-        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Optional<Carrinho> optional = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Carrinho carrinho = optional.orElseThrow(() -> new ValidacaoException("Carrinho não encontrado para o usuário informado."));
+
         itemCarrinhoService.limparCarrinho(carrinho.getId());
         carrinho.setQuantidadeItens(0);
         carrinho.setTotal(BigDecimal.ZERO);
     }
 
     public void removerItem(Long clienteId, Long produtoId) {
-        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Optional<Carrinho> optionalCarrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Carrinho carrinho = optionalCarrinho.orElseThrow(() -> new ValidacaoException("Carrinho não encontrado para o usuário informado."));
         Optional<ItemCarrinho> optional = itemCarrinhoService.encontrarPorCarrinhoIdEProdutoId(carrinho.getId(), produtoId);
 
         if (optional.isPresent()) {
@@ -95,7 +105,8 @@ public class CarrinhoService {
     }
 
     public CarrinhoDto atualizar(Long clienteId, AtualizarCarrinhoDto atualizarCarrinhoDto) {
-        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Optional<Carrinho> optional = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Carrinho carrinho = optional.orElseThrow(() -> new ValidacaoException("Carrinho não encontrado para o usuário informado."));
 
         HashMap<Long, ItemCarrinho> mapItemCarrinho = new HashMap<>(carrinho.getItensCarrinho()
                 .stream()
@@ -122,15 +133,14 @@ public class CarrinhoService {
             itemCarrinhoService.salvar(itemCarrinho);
         }
 
-
-        CarrinhoDto carrinhoDto = new CarrinhoDto(carrinhoRepository.findCarrinhoByClienteId(clienteId), carrinhoRepository.findCarrinhoByClienteId(clienteId).getItensCarrinho());
+        CarrinhoDto carrinhoDto = new CarrinhoDto(carrinho, carrinho.getItensCarrinho());
 
         return carrinhoDto;
     }
 
     public Venda finalizar(Long clienteId) {
         Cliente cliente = clienteService.encontrarPorId(clienteId);
-        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
+        Carrinho carrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId).orElseThrow(() -> new ValidacaoException("Carrinho não encontrado."));
 
         if (carrinho.getItensCarrinho().isEmpty()) {
             throw new ValidacaoException("Carrinho vazio não pode ser finalizado.");
