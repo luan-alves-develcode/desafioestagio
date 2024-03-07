@@ -108,7 +108,7 @@ public class CarrinhoService {
 
             itemCarrinhoService.removerItemPorCarrinhoIdeProdutoId(carrinho.getId(), produtoId);
         } else {
-            throw new ValidacaoException("Item não encontrado.");
+            throw new ValidacaoException("Item não encontrado no carrinho.");
         }
     }
 
