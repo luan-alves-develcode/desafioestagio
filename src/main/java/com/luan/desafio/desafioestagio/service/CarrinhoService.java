@@ -47,7 +47,7 @@ public class CarrinhoService {
         Carrinho carrinho = carrinhoRepository.save(new Carrinho(cliente));
     }
 
-    public void adicionarItemAoCarrinho(ItemParaoCarrinhoDto itemParaCarrinhoDto, Long clienteId) {
+    public CarrinhoDto adicionarItemAoCarrinho(ItemParaoCarrinhoDto itemParaCarrinhoDto, Long clienteId) {
         Integer quantidadeDoItem = 1;
         if (itemParaCarrinhoDto.getQuantidade() != null) {
             quantidadeDoItem = itemParaCarrinhoDto.getQuantidade();
@@ -74,9 +74,10 @@ public class CarrinhoService {
         carrinho.setTotal(novoTotal);
         carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() + quantidadeDoItem);
         carrinho.getItensCarrinho().add(item);
-        System.out.println(item);
 
         itemCarrinhoService.salvar(item);
+
+        return new CarrinhoDto(carrinho, carrinho.getItensCarrinho());
     }
 
     public CarrinhoDto verCarrinho(Long clienteId) {
@@ -96,7 +97,7 @@ public class CarrinhoService {
         carrinho.setTotal(BigDecimal.ZERO);
     }
 
-    public void removerItem(Long clienteId, Long produtoId) {
+    public CarrinhoDto removerItem(Long clienteId, Long produtoId) {
         Optional<Carrinho> optionalCarrinho = carrinhoRepository.findCarrinhoByClienteId(clienteId);
         Carrinho carrinho = optionalCarrinho.orElseThrow(() -> new ValidacaoException("Carrinho não encontrado para o usuário informado."));
         Optional<ItemCarrinho> optional = itemCarrinhoService.encontrarPorCarrinhoIdEProdutoId(carrinho.getId(), produtoId);
@@ -110,6 +111,8 @@ public class CarrinhoService {
         } else {
             throw new ValidacaoException("Item não encontrado no carrinho.");
         }
+
+        return new CarrinhoDto(carrinho, carrinho.getItensCarrinho());
     }
 
     public CarrinhoDto atualizar(Long clienteId, AtualizarCarrinhoDto atualizarCarrinhoDto) {
@@ -133,7 +136,7 @@ public class CarrinhoService {
             mapItemCarrinho.replace(dtoItemCarrinho.getId(), item);
         }
 
-        calcularValoresDoCarrinhoESetar(carrinho);
+        calcularValoresDoCarrinho(carrinho);
         CarrinhoDto carrinhoDto = new CarrinhoDto(carrinho, carrinho.getItensCarrinho());
 
         return carrinhoDto;
@@ -148,8 +151,6 @@ public class CarrinhoService {
         }
 
         Venda novaVenda = new Venda(cliente, carrinho.getTotal(), carrinho.getQuantidadeItens());
-        System.out.println(cliente.getId() + " " + carrinho.getId() + " " + carrinho.getItensCarrinho());
-        System.out.println("venda_cliente_id: " + novaVenda.getCliente().getId() + " Qtd itens: " + novaVenda.getQuantidadeItens() + " Total: " + novaVenda.getTotal());
         Venda vendaSalva = vendaService.salvar(novaVenda);
 
         carrinho.getItensCarrinho().forEach(itemCarrinho -> {
@@ -174,7 +175,7 @@ public class CarrinhoService {
         return false;
     }
 
-    private void calcularValoresDoCarrinhoESetar(Carrinho carrinho) {
+    private void calcularValoresDoCarrinho(Carrinho carrinho) {
         carrinho.setQuantidadeItens(carrinho.getItensCarrinho().stream()
                 .mapToInt(ItemCarrinho::getQuantidade)
                 .sum()
