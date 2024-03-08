@@ -4,6 +4,7 @@ import com.luan.desafio.desafioestagio.dto.CadastrarProdutoDto;
 import com.luan.desafio.desafioestagio.exception.ValidacaoException;
 import com.luan.desafio.desafioestagio.model.Produto;
 import com.luan.desafio.desafioestagio.repository.ProdutoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,8 @@ public class ProdutoService {
     private ProdutoRepository produtoRepository;
 
     public Produto findProdutoById(Long id) {
-        return produtoRepository.getReferenceById(id);
+        var optional = produtoRepository.findById(id);
+        return optional.orElseThrow(() -> new EntityNotFoundException("Produto não encontrado."));
     }
 
     public Produto salvar(CadastrarProdutoDto dto) {
