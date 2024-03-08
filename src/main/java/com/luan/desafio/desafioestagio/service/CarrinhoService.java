@@ -119,28 +119,21 @@ public class CarrinhoService {
         HashMap<Long, ItemCarrinho> mapItemCarrinho = new HashMap<>(carrinho.getItensCarrinho()
                 .stream()
                 .collect(Collectors.toMap(item -> item.getProduto().getId(), item -> item)));
-        HashMap<Long, ItemCarrinho> diferencaItemCarrinho = new HashMap<>();
 
         for (AtualizarItemCarrinhoDto dtoItemCarrinho : atualizarCarrinhoDto.getCarrinho()) {
-            if (mapItemCarrinho.containsKey(dtoItemCarrinho.getId())) {
-                ItemCarrinho atualizadoItemCarrinho = mapItemCarrinho.get(dtoItemCarrinho.getId());
-                Integer novaQuantidadeDeItens = dtoItemCarrinho.getQuantidade() - atualizadoItemCarrinho.getQuantidade();
-                BigDecimal novoTotalDoCarrinho = somaItemCarrinhoDoTotalCarrinho(carrinho.getTotal(),
-                        atualizadoItemCarrinho.getProduto().getPrecoUnitario(),
-                        novaQuantidadeDeItens);
-
-                atualizadoItemCarrinho.setQuantidade(dtoItemCarrinho.getQuantidade());
-                diferencaItemCarrinho.put(dtoItemCarrinho.getId(), atualizadoItemCarrinho);
-
-                carrinho.setTotal(novoTotalDoCarrinho);
-                carrinho.setQuantidadeItens(carrinho.getQuantidadeItens() + (novaQuantidadeDeItens));
+            if (!mapItemCarrinho.containsKey(dtoItemCarrinho.getId())) {
+                Produto produto = produtoService.findProdutoById(dtoItemCarrinho.getId());
+                var item = new ItemCarrinho(produto, carrinho, dtoItemCarrinho.getQuantidade());
+                itemCarrinhoService.salvar(item);
+                mapItemCarrinho.put(dtoItemCarrinho.getId(), item);
             }
+            ItemCarrinho item = mapItemCarrinho.get(dtoItemCarrinho.getId());
+            item.setQuantidade(dtoItemCarrinho.getQuantidade());
+            itemCarrinhoService.salvar(item);
+            mapItemCarrinho.replace(dtoItemCarrinho.getId(), item);
         }
 
-        for (ItemCarrinho itemCarrinho : diferencaItemCarrinho.values()) {
-            itemCarrinhoService.salvar(itemCarrinho);
-        }
-
+        calcularValoresDoCarrinhoESetar(carrinho);
         CarrinhoDto carrinhoDto = new CarrinhoDto(carrinho, carrinho.getItensCarrinho());
 
         return carrinhoDto;
@@ -156,7 +149,7 @@ public class CarrinhoService {
 
         Venda novaVenda = new Venda(cliente, carrinho.getTotal(), carrinho.getQuantidadeItens());
         System.out.println(cliente.getId() + " " + carrinho.getId() + " " + carrinho.getItensCarrinho());
-        System.out.println("venda_cliente_id: " + novaVenda.getCliente().getId() + " Qtd itens: " + novaVenda.getQuantidadeItens() +  " Total: " + novaVenda.getTotal());
+        System.out.println("venda_cliente_id: " + novaVenda.getCliente().getId() + " Qtd itens: " + novaVenda.getQuantidadeItens() + " Total: " + novaVenda.getTotal());
         Venda vendaSalva = vendaService.salvar(novaVenda);
 
         carrinho.getItensCarrinho().forEach(itemCarrinho -> {
@@ -179,6 +172,18 @@ public class CarrinhoService {
             }
         }
         return false;
+    }
+
+    private void calcularValoresDoCarrinhoESetar(Carrinho carrinho) {
+        carrinho.setQuantidadeItens(carrinho.getItensCarrinho().stream()
+                .mapToInt(ItemCarrinho::getQuantidade)
+                .sum()
+        );
+        carrinho.setTotal(carrinho.getItensCarrinho()
+                .stream()
+                .map(item -> item.getProduto().getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+        );
     }
 
     private void atualizarValoresDoCarrinhoAposRemoverItem(Carrinho carrinho, ItemCarrinho itemCarrinho) {
